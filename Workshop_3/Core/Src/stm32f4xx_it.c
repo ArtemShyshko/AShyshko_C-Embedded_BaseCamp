@@ -32,7 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
- 
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -42,20 +42,20 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-static uint8_t cycle = 10;
+static uint8_t cycle = 100;
 static uint8_t pinNum = 0;
-static double freq = 99;
+static double freq = 199;
 
 uint8_t getCycle(void){
-	return cycle;
+  return cycle;
 }
 
 uint8_t getPinNum(void){
-	return pinNum;
+  return pinNum;
 }
 
 double getFreq(void){
-	return freq;
+  return freq;
 }
 /* USER CODE END PV */
 
@@ -76,7 +76,7 @@ double getFreq(void){
 /* USER CODE END EV */
 
 /******************************************************************************/
-/*           Cortex-M4 Processor Interruption and Exception Handlers          */ 
+/*           Cortex-M4 Processor Interruption and Exception Handlers          */
 /******************************************************************************/
 /**
   * @brief This function handles Non maskable interrupt.
@@ -86,9 +86,10 @@ void NMI_Handler(void)
   /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
 
   /* USER CODE END NonMaskableInt_IRQn 0 */
-  HAL_RCC_NMI_IRQHandler();
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
-
+  while (1)
+  {
+  }
   /* USER CODE END NonMaskableInt_IRQn 1 */
 }
 
@@ -218,17 +219,15 @@ void SysTick_Handler(void)
 void EXTI9_5_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI9_5_IRQn 0 */
-  if (HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_6) == GPIO_PIN_RESET){
-	  cycle += 5;
-      if (cycle > 100) cycle = 5;
-  }
-  else if (HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_8) == GPIO_PIN_RESET){
-	  cycle -= 5;
-      if (cycle < 5) cycle = 100;
-  }
-  else if (HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_9) == GPIO_PIN_RESET){
-	  freq += 50;
-  }
+	if (HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_6) == GPIO_PIN_RESET){
+	    cycle += 10;
+	  }
+	  else if (HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_8) == GPIO_PIN_RESET){
+	    cycle -= 10;
+	  }
+	  else if (HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_9) == GPIO_PIN_RESET){
+	    freq += 10;
+	  }
   /* USER CODE END EXTI9_5_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_6);
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_8);
@@ -244,12 +243,12 @@ void EXTI9_5_IRQHandler(void)
 void EXTI15_10_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI15_10_IRQn 0 */
-  if (HAL_GPIO_ReadPin (GPIOA, GPIO_PIN_15) == GPIO_PIN_RESET){
-	  pinNum++;
-	  if (pinNum > 4) pinNum = 0;
-  }
-  else if (HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_11) == GPIO_PIN_RESET)
-	  freq -= 50;
+	if (HAL_GPIO_ReadPin (GPIOA, GPIO_PIN_15) == GPIO_PIN_RESET){
+	    pinNum++;
+	    if (pinNum > 4) pinNum = 0;
+	  }
+	  else if (HAL_GPIO_ReadPin (GPIOC, GPIO_PIN_11) == GPIO_PIN_RESET)
+	    freq -= 10;
   /* USER CODE END EXTI15_10_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_15);

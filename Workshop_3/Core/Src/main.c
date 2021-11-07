@@ -17,7 +17,6 @@
   ******************************************************************************
   */
 /* USER CODE END Header */
-
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
@@ -90,38 +89,39 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  TIM4-> PSC= getFreq();
-	  switch (getPinNum()) {
-	  case 0:
-		  HAL_TIM_PWM_Start (& htim4, TIM_CHANNEL_1);
-		  HAL_TIM_PWM_Stop (& htim4, TIM_CHANNEL_2 | TIM_CHANNEL_3 | TIM_CHANNEL_4);
-		  TIM4-> CCR1 = getCycle();
-		  break;
-	  case 1:
-		  HAL_TIM_PWM_Start (& htim4, TIM_CHANNEL_2);
-		  HAL_TIM_PWM_Stop (& htim4, TIM_CHANNEL_1);
-		  TIM4-> CCR2 = getCycle();
-		  break;
-	  case 2:
-		  HAL_TIM_PWM_Start (& htim4, TIM_CHANNEL_3);
-		  HAL_TIM_PWM_Stop (& htim4, TIM_CHANNEL_2);
-		  TIM4-> CCR3 = getCycle();
-		  break;
-	  case 3:
-		  HAL_TIM_PWM_Start (& htim4, TIM_CHANNEL_4);
-		  HAL_TIM_PWM_Stop (& htim4, TIM_CHANNEL_3);
-		  TIM4-> CCR4 = getCycle();
-		  break;
-	  case 4:
-		  HAL_TIM_PWM_Stop (& htim4, TIM_CHANNEL_4);
-		  break;
-	  }
+	  TIM4-> ARR= getFreq();
+	      switch (getPinNum()) {
+	      case 0:
+	        HAL_TIM_PWM_Start (& htim4, TIM_CHANNEL_1);
+	        HAL_TIM_PWM_Stop (& htim4, TIM_CHANNEL_2 | TIM_CHANNEL_3 | TIM_CHANNEL_4);
+	        TIM4-> CCR1 = getCycle();
+	        break;
+	      case 1:
+	        HAL_TIM_PWM_Start (& htim4, TIM_CHANNEL_2);
+	        HAL_TIM_PWM_Stop (& htim4, TIM_CHANNEL_1);
+	        TIM4-> CCR2 = getCycle();
+	        break;
+	      case 2:
+	        HAL_TIM_PWM_Start (& htim4, TIM_CHANNEL_3);
+	        HAL_TIM_PWM_Stop (& htim4, TIM_CHANNEL_2);
+	        TIM4-> CCR3 = getCycle();
+	        break;
+	      case 3:
+	        HAL_TIM_PWM_Start (& htim4, TIM_CHANNEL_4);
+	        HAL_TIM_PWM_Stop (& htim4, TIM_CHANNEL_3);
+	        TIM4-> CCR4 = getCycle();
+	        break;
+	      case 4:
+	        HAL_TIM_PWM_Stop (& htim4, TIM_CHANNEL_4);
+	        break;
+	      }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -138,25 +138,26 @@ void SystemClock_Config(void)
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-  /** Configure the main internal regulator output voltage 
+  /** Configure the main internal regulator output voltage
   */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-  /** Initializes the CPU, AHB and APB busses clocks 
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 4;
-  RCC_OscInitStruct.PLL.PLLN = 100;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLN = 128;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV8;
   RCC_OscInitStruct.PLL.PLLQ = 4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
   }
-  /** Initializes the CPU, AHB and APB busses clocks 
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
@@ -165,13 +166,10 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
   {
     Error_Handler();
   }
-  /** Enables the Clock Security System 
-  */
-  HAL_RCC_EnableCSS();
 }
 
 /**
@@ -194,9 +192,9 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 9999;
+  htim4.Init.Prescaler = 799;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 99;
+  htim4.Init.Period = 199;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
@@ -219,7 +217,7 @@ static void MX_TIM4_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 10;
+  sConfigOC.Pulse = 100;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_PWM_ConfigChannel(&htim4, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
@@ -293,7 +291,10 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-
+	/* __disable_irq();
+  while (1)
+  {
+  }*/
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -306,10 +307,10 @@ void Error_Handler(void)
   * @retval None
   */
 void assert_failed(uint8_t *file, uint32_t line)
-{ 
+{
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
-     tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
